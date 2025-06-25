@@ -139,3 +139,5 @@
 .btn-primary{ @apply bg-[#D40511] text-white px-3 py-1 rounded; }
 .btn-secondary{ @apply bg-gray-200 text-gray-800 px-3 py-1 rounded; }
 
+
+.glass{ @apply bg-white/50 dark:bg-gray-800/50 backdrop-blur-md border border-white/30 dark:border-gray-700/30 rounded-xl p-6; }
