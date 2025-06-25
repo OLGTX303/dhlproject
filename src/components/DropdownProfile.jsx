@@ -1,16 +1,83 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import UserAvatar from '../images/image.png';
 import Transition from '../utils/Transition';
+import axios from 'axios';
+import CryptoJS from 'crypto-js';
+import Cookies from 'js-cookie';
+
+const keyStr = 'qE0S4wgKLC3RUP1dLXlkSGKj1xUeQYRG';
 
 function DropdownProfile({ align }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState({ name: 'User', avatar: UserAvatar, role: 'User' });
   const trigger = useRef(null);
   const dropdown = useRef(null);
 
   // ✅ Hide component on '/' and '/login'
   if (location.pathname === '/' || location.pathname === '/login') return null;
+
+  const handleSignOut = () => {
+    Cookies.remove('token');
+    Cookies.remove('role');
+    Cookies.remove('fingerprints');
+    Cookies.remove('device_fp');
+    Cookies.remove('internalId');
+    navigate('/login');
+  };
+
+  // fetch user profile once mounted
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp * 1000 < Date.now()) {
+        Cookies.remove('token');
+        Cookies.remove('role');
+        navigate('/login');
+        return;
+      }
+    } catch (err) {
+      console.error('Invalid token', err);
+      return;
+    }
+
+    axios
+      .get('https://who.olgtx.com/fench_profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        try {
+          const bytes = CryptoJS.AES.decrypt(
+            res.data,
+            CryptoJS.enc.Utf8.parse(keyStr),
+            {
+              mode: CryptoJS.mode.ECB,
+              padding: CryptoJS.pad.Pkcs7,
+            }
+          );
+          const decrypted = CryptoJS.enc.Utf8.stringify(bytes);
+          const info = JSON.parse(decrypted).page.result[0];
+          const isAdmin = info.groupList.some(
+            (g) => g.groupId === 'MEM_572173955719_5795'
+          );
+          Cookies.set('role', isAdmin ? 'admin' : 'user', { expires: 7 });
+          Cookies.set('internalId', info.internalNum, { expires: 7 });
+          setUser({
+            name: info.name,
+            avatar: info.showAvatarPath,
+            role: isAdmin ? 'Administrator' : 'User',
+          });
+        } catch (e) {
+          console.error('Profile parse failed', e);
+        }
+      })
+      .catch((err) => console.error('Profile fetch failed', err));
+  }, []);
 
   // close on click outside
   useEffect(() => {
@@ -42,9 +109,9 @@ function DropdownProfile({ align }) {
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-expanded={dropdownOpen}
       >
-        <img className="w-8 h-8 rounded-full" src={UserAvatar} width="32" height="32" alt="User" />
+        <img className="w-8 h-8 rounded-full" src={user.avatar || UserAvatar} width="32" height="32" alt="User" />
         <div className="flex items-center truncate">
-          <span className="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white">BOYU</span>
+          <span className="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white">{user.name}</span>
           <svg className="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500" viewBox="0 0 12 12">
             <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
           </svg>
@@ -67,8 +134,8 @@ function DropdownProfile({ align }) {
           onBlur={() => setDropdownOpen(false)}
         >
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-gray-200 dark:border-gray-700/60">
-            <div className="font-medium text-gray-800 dark:text-gray-100">BOYU</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 italic">Administrator</div>
+            <div className="font-medium text-gray-800 dark:text-gray-100">{user.name}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 italic">{user.role}</div>
           </div>
           <ul>
             <li>
@@ -81,13 +148,12 @@ function DropdownProfile({ align }) {
               </Link>
             </li>
             <li>
-              <Link
-                className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3"
-                to="/"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+              <button
+                className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3 w-full text-left"
+                onClick={() => { setDropdownOpen(false); handleSignOut(); }}
               >
                 Sign Out
-              </Link>
+              </button>
             </li>
           </ul>
         </div>

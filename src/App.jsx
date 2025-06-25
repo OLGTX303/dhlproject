@@ -23,6 +23,24 @@ function App() {
     document.querySelector('html').style.scrollBehavior = '';
   }, [location.pathname]);
 
+  // Check token validity on app load and on navigation
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 < Date.now()) {
+          Cookies.remove('token');
+          Cookies.remove('role');
+        }
+      } catch (err) {
+        console.error('Invalid token', err);
+        Cookies.remove('token');
+        Cookies.remove('role');
+      }
+    }
+  }, [location.pathname]);
+
   useEffect(() => {
     const token = Cookies.get('token');
     const role = Cookies.get('role');
