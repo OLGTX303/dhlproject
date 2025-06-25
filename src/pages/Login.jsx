@@ -1,10 +1,12 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import Fingerprint2 from 'fingerprintjs2';
 import Header from '../partials/Header';
 
-function Login({ setToken }) {
+function Login({ setToken = () => {} }) {
   const [Email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [aes_key, setAes_key] = useState('');
@@ -28,6 +30,23 @@ function Login({ setToken }) {
   const canvasRef = useRef(null);
 
   const navigate = useNavigate();
+
+  // Generate device fingerprint and enforce 2 device limit
+  useEffect(() => {
+    Fingerprint2.get((components) => {
+      const fp = Fingerprint2.x64hash128(components.map(c => c.value).join(''));
+      const stored = Cookies.get('fingerprints');
+      const list = stored ? stored.split(',') : [];
+      if (!list.includes(fp)) {
+        if (list.length >= 2) {
+          alert('Maximum number of devices reached');
+        } else {
+          Cookies.set('fingerprints', [...list, fp].join(','), { expires: 365 });
+        }
+      }
+      Cookies.set('device_fp', fp, { expires: 365 });
+    });
+  }, []);
 
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -142,7 +161,14 @@ function Login({ setToken }) {
       const responses= await axios.post("https://text.olgtx.com/login", { Email, encryptedPassword});
       if (response.data.success===true) {
         stopStreaming();
-        navigate("/dashboard");
+        const role = responses.data.role || 'user';
+        Cookies.set('token', responses.data.token, { expires: 7 });
+        Cookies.set('role', role, { expires: 7 });
+        if (role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/user');
+        }
         setToken(responses.data.token);
       } else {
         alert("Invalid username or password");
@@ -164,8 +190,15 @@ function Login({ setToken }) {
       const response = await axios.post('https://text.olgtx.com/api/verify-face', { photo });
       if (response.data.success===true) {
         stopStreaming();
+        Cookies.set('token', response.data.token, { expires: 7 });
+        const role = response.data.role || 'user';
+        Cookies.set('role', role, { expires: 7 });
+        if (role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/user');
+        }
         setToken(response.data.token);
-        navigate('/dashboard'); // ✅ Redirect after face login
       } else {
         alert('Invalid face');
       }
@@ -186,7 +219,7 @@ function Login({ setToken }) {
             ? 'Face Login'
             : 'Sign in to your account'}
         </h2>
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm glass">
           {isRegister ? (
             <form className="space-y-4" onSubmit={handleRegister}>
               <div className="flex flex-col items-center">
