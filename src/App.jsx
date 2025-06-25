@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+
 import useSessionTimeout from './hooks/useSessionTimeout';
+
 
 import './css/style.css';
 import './charts/ChartjsConfig';
@@ -38,6 +40,7 @@ function App() {
     document.querySelector('html').style.scrollBehavior = '';
   }, [location.pathname]);
 
+
   // Token validation on route change
   useEffect(() => {
     const token = Cookies.get('token');
@@ -57,6 +60,7 @@ function App() {
   }, [location.pathname]);
 
   // Auto-redirect to dashboard if logged in
+
   useEffect(() => {
     const token = Cookies.get('token');
     const role = Cookies.get('role');
