@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
 
-import Sidebar from '../partials/Sidebar';
-import Header from '../partials/Header';
-import FilterButton from '../components/DropdownFilter';
+
 import Datepicker from '../components/Datepicker';
+import FilterButton from '../components/DropdownFilter';
+import Banner from '../partials/Banner';
 import DashboardCard01 from '../partials/dashboard/DashboardCard01';
-import DashboardCard02 from '../partials/dashboard/DashboardCard02';
-import DashboardCard03 from '../partials/dashboard/DashboardCard03';
-import DashboardCard04 from '../partials/dashboard/DashboardCard04';
-import DashboardCard05 from '../partials/dashboard/DashboardCard05';
 import DashboardCard06 from '../partials/dashboard/DashboardCard06';
 import DashboardCard07 from '../partials/dashboard/DashboardCard07';
-import DashboardCard08 from '../partials/dashboard/DashboardCard08';
-import DashboardCard09 from '../partials/dashboard/DashboardCard09';
 import DashboardCard10 from '../partials/dashboard/DashboardCard10';
 import DashboardCard11 from '../partials/dashboard/DashboardCard11';
 import DashboardCard12 from '../partials/dashboard/DashboardCard12';
-import DashboardCard13 from '../partials/dashboard/DashboardCard13';
-import Banner from '../partials/Banner';
+import DashboardCard14 from '../partials/dashboard/DashboardCard14';
+import DashboardCard15 from '../partials/dashboard/DashboardCard15';
+import DashboardCard16 from '../partials/dashboard/DashboardCard16';
+import Header from '../partials/Header';
+import Sidebar from '../partials/Sidebar';
+
+
+
 
 function Dashboard() {
+  const [role, setRole] = useState(null);
+
+useEffect(() => {
+  const roleCookie = Cookies.get('role');
+  setRole(roleCookie);
+}, []);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -43,9 +50,16 @@ function Dashboard() {
 
               {/* Left: Title */}
               <div className="mb-4 sm:mb-0">
-                <h1 className="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Dashboard</h1>
+                <div className="mb-4 sm:mb-0">
+                <h1 className="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Team activity</h1>
+                    {role === 'admin' ? (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 italic">Team Leader</div>
+                    ) : (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 italic">User</div>
+                    )}
+                    </div>
               </div>
-
+              
               {/* Right: Actions */}
               <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
                 {/* Filter button */}
@@ -68,30 +82,46 @@ function Dashboard() {
 
               {/* Line chart (Acme Plus) */}
               <DashboardCard01 />
-              {/* Line chart (Acme Advanced) */}
-              <DashboardCard02 />
-              {/* Line chart (Acme Professional) */}
-              <DashboardCard03 />
-              {/* Bar chart (Direct vs Indirect) */}
-              <DashboardCard04 />
-              {/* Line chart (Real Time Value) */}
-              <DashboardCard05 />
-              {/* Doughnut chart (Top Countries) */}
-              <DashboardCard06 />
-              {/* Table (Top Channels) */}
-              <DashboardCard07 />
-              {/* Line chart (Sales Over Time) */}
-              <DashboardCard08 />
-              {/* Stacked bar chart (Sales VS Refunds) */}
-              <DashboardCard09 />
+              {role === 'admin' && (
+              <>
               {/* Card (Customers) */}
               <DashboardCard10 />
-              {/* Card (Reasons for Refunds) */}
-              <DashboardCard11 />
+              <DashboardCard14 />
+              </>
+                )}
+              {/* Line chart (Acme Advanced) 
+              <DashboardCard02 />*/}
               {/* Card (Recent Activity) */}
               <DashboardCard12 />
-              {/* Card (Income/Expenses) */}
-              <DashboardCard13 />
+              {/* Line chart (Acme Professional) 
+              <DashboardCard03 />*/}
+              {/* Bar chart (Direct vs Indirect) 
+              <DashboardCard04 />*/}
+              {role === 'admin' && (
+              <>
+              <DashboardCard15 />
+              <DashboardCard16 />
+              </>
+                )}
+              {/* Line chart (Real Time Value) 
+              <DashboardCard05 />*/}
+              {/* Admin-only cards */}
+              
+
+              {/* Doughnut chart (Top Countries) */}
+              <DashboardCard06 />
+              
+              {/* Line chart (Sales Over Time)
+              <DashboardCard08 />  */}
+              {/* Stacked bar chart (Sales VS Refunds) 
+              <DashboardCard09 />*/}
+              
+              {/* Card (Reasons for Refunds) */}
+              <DashboardCard11 />
+              {/* Table (Top Channels) */}
+              <DashboardCard07 />
+              {/* Card (Income/Expenses) 
+              <DashboardCard13 />*/}
               
             </div>
 

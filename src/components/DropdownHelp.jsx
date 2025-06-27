@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../utils/Transition';
 
@@ -47,7 +47,7 @@ function DropdownHelp({
           width={16}
           height={16}
           viewBox="0 0 16 16"
-          xmlns="http://www.w3.org/2000/svg"
+          xmlns="http://olgtx.com"
         >
           <path d="M9 7.5a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0v-4ZM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
           <path

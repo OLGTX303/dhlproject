@@ -1,8 +1,10 @@
 import React from 'react';
+import useElasticHover from '../../hooks/useElasticHover';
 
 function DashboardCard07() {
+  const tiltRef = useElasticHover();
   return (
-    <div className="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div ref={tiltRef} className="col-span-full xl:col-span-8 glass elastic shadow-xs rounded-xl">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
         <h2 className="font-semibold text-gray-800 dark:text-gray-100">Top Channels</h2>
       </header>

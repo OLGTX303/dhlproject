@@ -1,23 +1,45 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { addDays, format } from "date-fns"
+import { addDays, format, parseISO } from "date-fns";
+import Cookies from "js-cookie";
+import * as React from "react";
 
-import { cn } from "../lib/utils"
-import { Calendar } from "./ui/calendar"
+import { cn } from "../lib/utils";
+import { Calendar } from "./ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "./ui/popover"
+} from "./ui/popover";
 
-export default function DatePickerWithRange({
-  className,
-}) {
+// ✅ Auto-select today's date if no cookies
+const today = new Date();
+
+const savedStart = Cookies.get('range_start');
+const savedEnd = Cookies.get('range_end');
+
+const initialFrom = savedStart ? parseISO(savedStart) : today;
+const initialTo = savedEnd ? parseISO(savedEnd) : addDays(initialFrom, 0); // today only
+
+export default function DatePickerWithRange({ className, onChange }) {
   const [date, setDate] = React.useState({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  })
+    from: initialFrom,
+    to: initialTo,
+  });
+
+  // ✅ Persist selected range to cookies
+  React.useEffect(() => {
+    if (date?.from) {
+      Cookies.set('range_start', date.from.toISOString(), { expires: 7 });
+    }
+    if (date?.to) {
+      Cookies.set('range_end', date.to.toISOString(), { expires: 7 });
+    }
+
+    if (onChange && date.from && date.to) {
+      onChange({ from: date.from, to: date.to });
+    }
+  }, [date, onChange]);
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -30,7 +52,6 @@ export default function DatePickerWithRange({
               !date && "text-muted-foreground"
             )}
           >
-            {/* <CalendarIcon /> */}
             <svg className="fill-current text-gray-400 dark:text-gray-500 ml-1 mr-2" width="16" height="16" viewBox="0 0 16 16">
               <path d="M5 4a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H5Z"></path>
               <path d="M4 0a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4a4 4 0 0 0-4-4H4ZM2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Z"></path>
@@ -59,5 +80,5 @@ export default function DatePickerWithRange({
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

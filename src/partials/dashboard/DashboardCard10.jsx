@@ -1,4 +1,4 @@
-import React from 'react';
+import useElasticHover from '../../hooks/useElasticHover';
 
 import Image01 from '../../images/user-36-05.jpg';
 import Image02 from '../../images/user-36-06.jpg';
@@ -7,6 +7,7 @@ import Image04 from '../../images/user-36-08.jpg';
 import Image05 from '../../images/user-36-09.jpg';
 
 function DashboardCard10() {
+  const tiltRef = useElasticHover();
 
   const customers = [
     {
@@ -15,7 +16,7 @@ function DashboardCard10() {
       name: 'Alex Shatov',
       email: 'alexshatov@gmail.com',
       location: '🇺🇸',
-      spent: '$2,890.66',
+      spent: '2,890.66',
     },
     {
       id: '1',
@@ -23,7 +24,7 @@ function DashboardCard10() {
       name: 'Philip Harbach',
       email: 'philip.h@gmail.com',
       location: '🇩🇪',
-      spent: '$2,767.04',
+      spent: '2,767.04',
     },
     {
       id: '2',
@@ -31,7 +32,7 @@ function DashboardCard10() {
       name: 'Mirko Fisuk',
       email: 'mirkofisuk@gmail.com',
       location: '🇫🇷',
-      spent: '$2,996.00',
+      spent: '2,996.00',
     },
     {
       id: '3',
@@ -39,7 +40,7 @@ function DashboardCard10() {
       name: 'Olga Semklo',
       email: 'olga.s@cool.design',
       location: '🇮🇹',
-      spent: '$1,220.66',
+      spent: '1,220.66',
     },
     {
       id: '4',
@@ -47,12 +48,12 @@ function DashboardCard10() {
       name: 'Burak Long',
       email: 'longburak@gmail.com',
       location: '🇬🇧',
-      spent: '$1,890.66',
+      spent: '1,890.66',
     },
   ];
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-gray-800 shadow-xs rounded-xl">
+    <div ref={tiltRef} className="col-span-full xl:col-span-6 glass elastic shadow-xs rounded-xl">
       <header className="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
         <h2 className="font-semibold text-gray-800 dark:text-gray-100">Customers</h2>
       </header>      
@@ -96,7 +97,7 @@ function DashboardCard10() {
                         <div className="text-left">{customer.email}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">{customer.spent}</div>
+                        <div className="text-left font-medium text-green-500">MYR {customer.spent}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
                         <div className="text-lg text-center">{customer.location}</div>

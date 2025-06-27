@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Transition from "../utils/Transition";
-
 function DropdownFilter({ align }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -54,9 +53,10 @@ function DropdownFilter({ align }) {
 
   return (
     <div className="relative inline-flex">
+   
       <button
         ref={trigger}
-        className="btn px-2.5 bg-white dark:bg-gray-800 border-gray-200 hover:border-gray-300 dark:border-gray-700/60 dark:hover:border-gray-600 text-gray-400 dark:text-gray-500"
+        className="btn px-2.5 bg-amber-500 dark:bg-gray-800 border-gray-200 hover:border-gray-300 dark:border-gray-700/60 dark:hover:border-gray-600 text-gray-400 dark:text-gray-500"
         aria-haspopup="true"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-expanded={dropdownOpen}
