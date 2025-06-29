@@ -15,6 +15,9 @@ import UserDashboard from './pages/UserDashboard';
 import ActivityDashboard from './pages/ActivityDashboard';
 import TeamDashboard from './pages/TeamDashboard';
 import EditActivity from './pages/EditActivity';
+import CalendarPage from './pages/CalendarPage';
+import Inbox from './pages/Inbox';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   const location = useLocation();
@@ -97,6 +100,9 @@ function App() {
         <Route path="/activity" element={<ActivityDashboard />} />
         <Route path="/team" element={<TeamDashboard />} />
         <Route path="/edit" element={<EditActivity />} />
+        <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/inbox" element={<Inbox />} />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </>
   );

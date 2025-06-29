@@ -44,7 +44,7 @@ function CalendarPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-indigo-100 via-blue-50 to-pink-100">
+    <div className="flex h-screen overflow-hidden  from-indigo-100 via-blue-50 to-pink-100">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="relative flex flex-col flex-1 overflow-y-auto">
@@ -54,9 +54,9 @@ function CalendarPage() {
             <h1 className="text-xl font-bold text-gray-800 dark:text-amber-100">Sprint Activity Calendar</h1>
             <button
               onClick={syncCalendar}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
+              className="px-4 py-2 btn-primary text-white rounded-lg shadow-md hover:bg-blue-700 transition"
             >
-              Randomize Activities
+             Sync Activities
             </button>
           </div>
 
@@ -64,7 +64,7 @@ function CalendarPage() {
             {daysOfWeek.map(day => (
               <div
                 key={day}
-                className="rounded-xl p-4 shadow-lg border border-white/30 min-h-[180px] bg-white/30 backdrop-blur-sm"
+                className="rounded-xl p-4 shadow-lg border glass border-white/30 min-h-[180px] bg-white/30 backdrop-blur-sm"
               >
                 <h2 className="text-lg font-semibold text-blue-900 dark:text-amber-100 mb-2">{day}</h2>
                 {activities[day]?.map((item, idx) => (
