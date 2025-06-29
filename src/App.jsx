@@ -18,6 +18,7 @@ import EditActivity from './pages/EditActivity';
 import CalendarPage from './pages/CalendarPage';
 import Inbox from './pages/Inbox';
 import SearchPage from './pages/SearchPage';
+import Reports from './pages/Reports';
 
 function App() {
   const location = useLocation();
@@ -103,6 +104,7 @@ function App() {
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/inbox" element={<Inbox />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/reports" element={<Reports />} />
       </Routes>
     </>
   );
